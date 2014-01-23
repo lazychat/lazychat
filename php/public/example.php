@@ -11,7 +11,7 @@
   </head>
   <body>
     <div class="container">
-        <a class="btn btn-primary lazychat-window" href="#" data-connection="91032ad7bbcb6cf72875e8e8207dcfba80173f7c">New Chat</a>
+        <a class="btn btn-primary lazychat-window" href="#" data-connection="b1d5781111d84f7b3fe45a0852e59758cd7a87e5">New Chat</a>
     </div>
 
     
@@ -43,7 +43,7 @@
     <script>
         $('body').lazyChat({
             title: 'LazyChat',
-            listen: 'b1d5781111d84f7b3fe45a0852e59758cd7a87e5'
+            listen: '91032ad7bbcb6cf72875e8e8207dcfba80173f7c'
         });
     </script>
   </body>

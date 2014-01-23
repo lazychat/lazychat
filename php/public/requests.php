@@ -29,6 +29,8 @@ $app->post('/save-message', function() {
 
 	$insertData['_id'] = new MongoId();
 	$insertData['_message'] = array(
+		'server'        => $_POST['server'],
+		'client'        => $_POST['client'],
 		'changed_date'  => date('Y-m-d H:i:s'),
 		'register_date' => new MongoDate(),
 		'content'       => htmlentities($_POST['message']),
@@ -42,6 +44,31 @@ $app->post('/save-message', function() {
 $app->post('/get-message', function() {
 	$mongo = new Mongo('mongodb://localhost:27017');
 	$messagesCollection = $mongo->selectDB('lazychat')->selectCollection('messages');
+
+	$collectionCursor = $messagesCollection->find(
+		array('$or' => array( 
+				array('_message.client' => $_POST['client'], '_message.server' => $_POST['server']), 
+				array('_message.client' => $_POST['server'], '_message.server' => $_POST['client'])
+			)
+		)
+	);
+	$numItens = $messagesCollection->count() -1;
+
+	$viewArray[] = 'var messagesArray = new Array();';
+
+	$i = 0;
+
+	foreach ($collectionCursor as $docMessage) {
+		$viewArray[] = 'messagesArray['.$i.'] = '.json_encode($docMessage).';'; 
+
+		if ($numItens == $i) {
+			$_SESSION[$_POST['listen']] = $docMessage['message']['change_date'];
+		}
+
+		$i++;
+	}
+
+	echo implode('', $viewArray);
 });
 
 ///////////////////////////

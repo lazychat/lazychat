@@ -1,3 +1,7 @@
+[hidden] {
+  display: none;
+}
+
 .lazychat {
 	position: fixed;
 	bottom: 0;

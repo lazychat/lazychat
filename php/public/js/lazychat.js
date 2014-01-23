@@ -3,6 +3,7 @@
     var defaults = {
         language: 'en',
         title: 'LazyChat',
+        listen: 'anonymous'
     };
 
     function Plugin ( element, options ) {
@@ -16,78 +17,92 @@
 
     Plugin.prototype = {
         init: function () {            
-            var currentLazyChatElem = $(this.element);
-            currentLazyChatElem.find('.lazychat-title').text(this.settings.title);
+            var bodyElem = $(this.element);
+            var listen = this.settings.listen;
+
+            bodyElem.find('.lazychat .lazychat-title').text(this.settings.title);
 
             (function requestMessageLoop(){
               setTimeout(function() {
-                $.ajax({
-                    url: '/php/public/get-message',
-                    type: 'POST',
-                    data: {conversation_id: conversationIdElem.val(), date_consult: dateConsultElem.val()},
-                    dataType: "html",
-                    success: function (data) {
-                      eval(data);
-                      
-                      var updateScroll = false;
-                      
-                      var timelineElem = $('.chat .message .timeline');
-                      var scrollTop    = timelineElem.scrollTop();
-                      var scrollHeight = timelineElem[0].scrollHeight - (timelineElem.outerHeight());
-                      
-                      if (scrollTop == scrollHeight) {
-                        updateScroll = true;
-                      }
-                      
-                      for (var key in messagesArray) {            
-                        if ($('.chat .timeline').find('[data-message-id='+messagesArray[key]._id.$id+']').length <= 0) {
-                          var dateFromNow = moment(messagesArray[key].message.change_date).fromNow();
-                          var appendHTML = '';
-                          
-                          var appendHTML = '';
-                          appendHTML += '<div class="assistant" data-message-id="+messageId+">';
-                          appendHTML += '<div class="row">';
-                          appendHTML += '<<di>                                                                                                                                                                                                                                                                                </di>v class="col-xs-12">';
-                          appendHTML += '<span class="message-content">';
-                          appendHTML += '<div class="arrow"></div>';
-                          appendHTML += messagesArray[key].message.message;
-                          appendHTML += '<br><i>Poucos segundos atrás</i></span>';
-                          appendHTML += '<div class="avatar">';
-                          appendHTML += '<img src="http://www.cosmicgirlgames.com/images/menu/flat.png" width="30" alt="">';
-                          appendHTML += '</div>';
-                          appendHTML += '</div>';
-                          appendHTML += '</div>';
-                          appendHTML += '</div>';          'lazychat.js'
-                                          
-                          currentLazyChatElem.find('.timeline').append(appendHTML);
+                $(document).find('.lazychat').each(function() {
+                  var lazyChatElem = $(this);
+
+                  if (lazyChatElem.is(':visible')) {
+                    $.ajax({
+                      type: 'POST',
+                      url: '/php/public/get-message',
+                      data: { server: lazyChatElem.find('input[name=request-id]').val(), client: listen },
+                      success: function(data) {
+                        eval(data);
+
+                        for (var key in messagesArray) {            
+                          if (lazyChatElem.find('[data-message-id='+messagesArray[key]._id.$id+']').length <= 0) {
+                            var chatClass;
+
+                            if (messagesArray[key]._message.client == listen) {
+                              chatClass = 'client';
+                            } else {
+                              chatClass = 'assistant';
+                            }
+
+                            var appendHTML = '';
+                              
+                            var appendHTML = '';
+
+                            appendHTML += '<div class="'+chatClass+'" data-message-id="'+messagesArray[key]._id.$id+'">';
+                            appendHTML += '<div class="row">';
+                            appendHTML += '<div class="col-xs-12">';
+                            appendHTML += '<span class="message-content">';
+                            appendHTML += '<div class="arrow"></div>';
+                            appendHTML += messagesArray[key]._message.content;
+                            appendHTML += '<br><i>Poucos segundos atrás</i></span>';
+                            appendHTML += '<div class="avatar">';
+                            appendHTML += '<img src="http://www.cosmicgirlgames.com/images/menu/flat.png" width="30" alt="">';
+                            appendHTML += '</div>';
+                            appendHTML += '</div>';
+                            appendHTML += '</div>';
+                            appendHTML += '</div>';
+                                            
+                            lazyChatElem.find('.message .timeline').append(appendHTML);
+                          }
                         }
-                      };
-                      
-                      var newScrollTop    = timelineElem.scrollTop();
-                      var newScrollHeight = timelineElem[0].scrollHeight - (timelineElem.height() + 20);
-                      
-                      if (updateScroll && newScrollTop != newScrollHeight) {
-                        update_timeline_scroll();
-                      }
-                      
-                      if (typeof newStorageDate != 'undefined') {
-                        dateConsultElem.val(newStorageDate);
-                      }
-                      
-                      requestMessageLoop();
-                    },
+                    }
                   });
-              }, 500);
+                }
+                });
+
+                requestMessageLoop();
+              }, 1000);
             })();
         },
         addEvents: function() {
-          var currentLazyChatElem = $(this.element);
+          var bodyElem = $(this.element);
+          var listen = this.settings.listen;
+
+          ///////////////////////////////
+          // LazyChat new window event //
+          ///////////////////////////////
+
+          bodyElem.find('.lazychat-window').on('click', function(event) {
+            event.preventDefault();
+
+            var newWindowElem = $(this);
+            var connectionID = newWindowElem.attr('data-connection');
+
+            if (listen != connectionID) {
+              // Window Construction
+              var windowLayout = bodyElem.find('.lazychat-layout').html().replace('{{ request-id }}', '<input type="hidden" name="request-id" value="'+connectionID+'">');
+              bodyElem.append(windowLayout);
+            } else {
+              console.log('ERRO! Listen is equal window id');
+            }
+          });
 
           //////////////////
           // Toogle event //
           //////////////////
           
-          currentLazyChatElem.find('.header .toggle-chat').on('click', function() {
+          $(document).on('click', '.lazychat .header .toggle-chat', function() {
             var toogleChatElem = $(this);
            
             if (toogleChatElem.text() == '-') {
@@ -107,18 +122,20 @@
           // Enter keypress event //
           //////////////////////////
 
-          currentLazyChatElem.find('.input input').on('keypress', function(event) {
+          $(document).on('keypress', '.lazychat .input input', function(event) {
             var inputMessageElem = $(this);
             var message = $.trim(inputMessageElem.val());
+            var server = $(this).parent().parent().parent().find('input[name=request-id]').val();
+            var timeLineElem = $(this).parent().parent().parent().find('.timeline');
 
-            if (event.keyCode == 13 && message != '') {            
-              $.post('/php/public/save-message', { message: message }, function(messageId) {
+            if (event.keyCode == 13 && message != '') {     
+              $.post('/php/public/save-message', { server: server, client: listen, message: message }, function(messageId) {
                 var appendHTML = '';
 
                 // http://m1.behance.net/rendition/modules/85530099/disp/9733ab203bbfb89d5639c189bccdc046.png
                 // http://www.cosmicgirlgames.com/images/menu/flat.png
 
-                appendHTML += '<div class="assistant" data-message-id="+messageId+">';
+                appendHTML += '<div class="client" data-message-id="'+messageId+'">';
                 appendHTML += '<div class="row">';
                 appendHTML += '<div class="col-xs-12">';
                 appendHTML += '<span class="message-content">';
@@ -132,11 +149,11 @@
                 appendHTML += '</div>';
                 appendHTML += '</div>';
                 
-                currentLazyChatElem.find('.message .timeline').append(appendHTML);
+                bodyElem.find('.lazychat .message .timeline').append(appendHTML);
                 inputMessageElem.val('');
 
-                currentLazyChatElem.find('.message .timeline').animate({
-                  scrollTop: currentLazyChatElem.find('.message .timeline')[0].scrollHeight
+                timeLineElem.animate({
+                  scrollTop: timeLineElem[0].scrollHeight
                 }, 200);
               });
             }
