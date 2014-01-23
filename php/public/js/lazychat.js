@@ -37,16 +37,8 @@
 
                         for (var key in messagesArray) {            
                           if (lazyChatElem.find('[data-message-id='+messagesArray[key]._id.$id+']').length <= 0) {
-                            var chatClass;
-
-                            if (messagesArray[key]._message.client == listen) {
-                              chatClass = 'client';
-                            } else {
-                              chatClass = 'assistant';
-                            }
-
-                            var appendHTML = '';
-                              
+                            var chatClass = messagesArray[key]._message.client == listen ? 'client' : 'assistant';
+                            
                             var appendHTML = '';
 
                             appendHTML += '<div class="'+chatClass+'" data-message-id="'+messagesArray[key]._id.$id+'">';
