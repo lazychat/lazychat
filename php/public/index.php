@@ -1,8 +1,9 @@
 <?php
-ini_set('error_reporting', -1);
-date_default_timezone_set('America/Sao_Paulo');
 
-require 'Slim/Slim.php';
+define('ROOT_PATH', dirname(dirname(__FILE__)));
+define('DS', 'DIRECTORY_SEPARATOR');
+
+require ROOT_PATH.'Slim/Slim.php';
 
 \Slim\Slim::registerAutoloader();
 
