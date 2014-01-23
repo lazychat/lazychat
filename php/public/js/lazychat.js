@@ -49,33 +49,39 @@
 
           currentLazyChatElem.find('.input input').on('keypress', function(event) {
             var inputMessageElem = $(this);
-            var message = inputMessageElem.val();
+            var message = $.trim(inputMessageElem.val());
 
-            if (event.keyCode == 13 && $.trim(message) != '') {
-              currentLazyChatElem.find('.message .timeline').animate({
-                scrollTop: currentLazyChatElem.find('.message .timeline')[0].scrollHeight
-              }, 500);
-              
-              var appendHTML = '';
-      
-              appendHTML += '<div class="client" data-message-id="">';
-              appendHTML += '<div class="row">';
-              appendHTML += '<div class="col-xs-12">';
-              appendHTML += '<span class="pull-left" style="width: 85%"><i>Poucos segundos atrás</i><br>';
-              appendHTML += '<div class="arrow"></div>';
-              appendHTML += message+'</span>';
-              appendHTML += '<div class="avatar pull-right" style="width: 13%">';
-              appendHTML += '<img src="http://beta.buscapremiada.com/portal/assets/img/tmp/business/chat.png" alt="">';
-              appendHTML += '</div>';
-              appendHTML += '</div>';
-              appendHTML += '</div>';
-              appendHTML += '</div>';
-              
-              currentLazyChatElem.find('.message .timeline').append(appendHTML);
-              inputMessageElem.val('');
-          }
-        });
-      }
+            if (event.keyCode == 13 && message != '') {            
+              $.post('/php/public/save-message', { message: message }, function(messageId) {
+                var appendHTML = '';
+
+                // http://m1.behance.net/rendition/modules/85530099/disp/9733ab203bbfb89d5639c189bccdc046.png
+                // http://www.cosmicgirlgames.com/images/menu/flat.png
+
+                appendHTML += '<div class="assistant" data-message-id="+messageId+">';
+                appendHTML += '<div class="row">';
+                appendHTML += '<div class="col-xs-12">';
+                appendHTML += '<span class="message-content">';
+                appendHTML += '<div class="arrow"></div>';
+                appendHTML += message;
+                appendHTML += '<br><i>Poucos segundos atrás</i></span>';
+                appendHTML += '<div class="avatar">';
+                appendHTML += '<img src="http://www.cosmicgirlgames.com/images/menu/flat.png" width="30" alt="">';
+                appendHTML += '</div>';
+                appendHTML += '</div>';
+                appendHTML += '</div>';
+                appendHTML += '</div>';
+                
+                currentLazyChatElem.find('.message .timeline').append(appendHTML);
+                inputMessageElem.val('');
+
+                currentLazyChatElem.find('.message .timeline').animate({
+                  scrollTop: currentLazyChatElem.find('.message .timeline')[0].scrollHeight
+                }, 200);
+              });
+            }
+          });
+        }
     };
 
     $.fn[ pluginName ] = function ( options ) {

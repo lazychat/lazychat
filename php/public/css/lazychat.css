@@ -78,6 +78,10 @@
   padding: 5px;
 }
 
+.lazychat .message .client .message-content {
+  color: #BC20D1;
+}
+
 .lazychat .message .assistant span, .lazychat .message .client span {
 	display: block;
   font-family: Arial, sans-serif;
