@@ -7,16 +7,16 @@
     
     <!--Stylesheets-->
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="openchat.css">
+    <link rel="stylesheet" href="css/lazychat.css">
   </head>
   <body>
     
-    <div class="chat">
+    <div class="lazychat">
       	<input type="hidden" name="conversation-id">
       <input type="hidden" name="date-consult">
         <div class="row header">
             <div class="col-xs-10">
-                <h2><img src="http://placehold.it/11x13" alt="">Open Chat</h2>
+                <h2 class="lazychat-title"></h2>
             </div>
             <div class="col-xs-2"><a href="#" class="toggle-chat">+</a></div>
         </div>
@@ -34,6 +34,9 @@
     <!--Javascripts-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="js/moment.min.js"></script>
-    <script src="openchat.js"></script>
+    <script src="js/lazychat.js"></script>
+    <script>
+        $('.lazychat').lazyChat({title: 'LazyChat'});
+    </script>
   </body>
 </html>

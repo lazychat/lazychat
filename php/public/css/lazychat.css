@@ -80,6 +80,10 @@
 
 .lazychat .message .assistant span, .lazychat .message .client span {
 	display: block;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  color: #222;
+  line-height: 22px;
 }
 
 .lazychat .message .assistant span i, .lazychat .message .client span i {
@@ -106,7 +110,8 @@
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
-	font-size: 12px;
+  font-family: Arial, sans-serif;
+	font-size: 13px;
 }
 
 .lazychat .avatar {
