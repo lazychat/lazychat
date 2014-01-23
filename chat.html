@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,intial-scale=1.0">
+    <title>Openchat</title>
+    
+    <!--Stylesheets-->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="openchat.css">
+  </head>
+  <body>
+    
+    <div class="chat">
+      	<input type="hidden" name="conversation-id">
+      <input type="hidden" name="date-consult">
+        <div class="row header">
+            <div class="col-xs-10">
+                <h2><img src="http://placehold.it/11x13" alt="">Open Chat</h2>
+            </div>
+            <div class="col-xs-2"><a href="#" class="toggle-chat">+</a></div>
+        </div>
+        <div class="message" hidden>
+            <div class="timeline">
+                
+            </div>
+    
+            <div class="input">
+                <input type="text" placeholder="Digite aqui sua mensagem">
+            </div>
+        </div>
+    </div>
+    
+    <!--Javascripts-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="openchat.js"></script>
+  </body>
+</html>
