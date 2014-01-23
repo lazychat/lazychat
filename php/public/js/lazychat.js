@@ -96,16 +96,17 @@
           
           $(document).on('click', '.lazychat .header .toggle-chat', function() {
             var toogleChatElem = $(this);
+            var lazyChatElem = $(this).parent().parent().parent();
            
             if (toogleChatElem.text() == '-') {
-              $('.lazychat .message').slideUp('fast');
+              lazyChatElem.find('.message').slideUp('fast');
               toogleChatElem.text('+');
             } else {
-              $('.lazychat .message').slideDown('fast');
+              lazyChatElem.find('.message').slideDown('fast');
               toogleChatElem.text('-');
                 
-              $('.lazychat .message .timeline').animate({
-                scrollTop: $('.lazychat .message .timeline')[0].scrollHeight
+              lazyChatElem.find('.message .timeline').animate({
+                scrollTop: lazyChatElem.find('.message .timeline')[0].scrollHeight
               }, 500);
             }
           });
