@@ -16,7 +16,7 @@
     }
 
     Plugin.prototype = {
-        init: function () {            
+        init: function () {  
             var bodyElem = $(this.element);
             var listen = this.settings.listen;
 
@@ -24,6 +24,8 @@
 
             (function requestMessageLoop(){
               setTimeout(function() {
+                window.clearTimeout();
+                
                 $(document).find('.lazychat').each(function() {
                   var lazyChatElem = $(this);
 
@@ -34,6 +36,16 @@
                       data: { server: lazyChatElem.find('input[name=request-id]').val(), client: listen },
                       success: function(data) {
                         eval(data);
+
+                        var updateScroll = false;
+                
+                        var timelineElem = lazyChatElem.find('.message .timeline');
+                        var scrollTop    = timelineElem.scrollTop();
+                        var scrollHeight = timelineElem[0].scrollHeight - timelineElem.outerHeight();
+
+                        if (scrollTop >= scrollHeight) {
+                          updateScroll = true;
+                        }
 
                         for (var key in messagesArray) {            
                           if (lazyChatElem.find('[data-message-id='+messagesArray[key]._id.$id+']').length <= 0) {
@@ -56,6 +68,10 @@
                             appendHTML += '</div>';
                                             
                             lazyChatElem.find('.message .timeline').append(appendHTML);
+
+                            if (updateScroll) {
+                              timelineElem.scrollTop(scrollHeight);
+                            }
                           }
                         }
                     }
@@ -107,7 +123,7 @@
                 
               lazyChatElem.find('.message .timeline').animate({
                 scrollTop: lazyChatElem.find('.message .timeline')[0].scrollHeight
-              }, 500);
+              }, 300);
             }
           });
 
@@ -124,9 +140,6 @@
             if (event.keyCode == 13 && message != '') {     
               $.post('/php/public/save-message', { server: server, client: listen, message: message }, function(messageId) {
                 var appendHTML = '';
-
-                // http://m1.behance.net/rendition/modules/85530099/disp/9733ab203bbfb89d5639c189bccdc046.png
-                // http://www.cosmicgirlgames.com/images/menu/flat.png
 
                 appendHTML += '<div class="client" data-message-id="'+messageId+'">';
                 appendHTML += '<div class="row">';
@@ -147,7 +160,7 @@
 
                 timeLineElem.animate({
                   scrollTop: timeLineElem[0].scrollHeight
-                }, 200);
+                }, 300);
               });
             }
           });
