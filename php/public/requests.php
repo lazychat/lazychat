@@ -1,5 +1,11 @@
 <?php
 
+///////////////
+// Settings  //
+///////////////
+
+ini_set('default_charset', 'UTF-8');
+
 ///////////////////////////////////
 // Requests default constants //
 ///////////////////////////////////
@@ -33,7 +39,7 @@ $app->post('/save-message', function() {
 		'client'        => $_POST['client'],
 		'changed_date'  => date('Y-m-d H:i:s'),
 		'register_date' => new MongoDate(),
-		'content'       => htmlentities($_POST['message']),
+		'content'       => strip_tags($_POST['message']),
 	);
 
 	if ($messagesCollection->insert($insertData)) {
@@ -62,7 +68,7 @@ $app->post('/get-message', function() {
 		$viewArray[] = 'messagesArray['.$i.'] = '.json_encode($docMessage).';'; 
 
 		if ($numItens == $i) {
-			$_SESSION[$_POST['listen']] = $docMessage['message']['change_date'];
+			$_SESSION[$_POST['client']] = $docMessage['_message']['changed_date'];
 		}
 
 		$i++;
