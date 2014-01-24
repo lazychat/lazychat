@@ -25,7 +25,7 @@
             (function requestMessageLoop(){
               setTimeout(function() {
                 window.clearTimeout();
-                
+
                 $(document).find('.lazychat').each(function() {
                   var lazyChatElem = $(this);
 
@@ -70,7 +70,9 @@
                             lazyChatElem.find('.message .timeline').append(appendHTML);
 
                             if (updateScroll) {
-                              timelineElem.scrollTop(scrollHeight);
+                              timelineElem.animate({
+                                scrollTop: timelineElem[0].scrollHeight
+                              }, 300);
                             }
                           }
                         }
