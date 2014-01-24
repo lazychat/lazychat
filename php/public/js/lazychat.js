@@ -41,7 +41,7 @@
                 
                         var timelineElem = lazyChatElem.find('.message .timeline');
                         var scrollTop    = timelineElem.scrollTop();
-                        var scrollHeight = timelineElem[0].scrollHeight - timelineElem.outerHeight();
+                        var scrollHeight = (timelineElem[0].scrollHeight - timelineElem.outerHeight()) - 3;
 
                         if (scrollTop >= scrollHeight) {
                           updateScroll = true;
