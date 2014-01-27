@@ -1,6 +1,7 @@
 ;(function ( $, window, document, undefined ) {
     var pluginName = "lazyChat";
     var defaults = {
+        base_url: ''
         language: 'en',
         title: 'LazyChat',
         listen: 'anonymous'
@@ -19,6 +20,7 @@
         init: function () {  
             var bodyElem = $(this.element);
             var listen = this.settings.listen;
+            var base_url = this.settings.base_url;
 
             bodyElem.find('.lazychat .lazychat-title').text(this.settings.title);
 
@@ -32,7 +34,7 @@
                   if (lazyChatElem.is(':visible')) {
                     $.ajax({
                       type: 'POST',
-                      url: '/php/public/get-message',
+                      url: base_url+'/php/public/get-message',
                       data: { server: lazyChatElem.find('input[name=request-id]').val(), client: listen },
                       success: function(data) {
                         eval(data);
@@ -88,6 +90,7 @@
         addEvents: function() {
           var bodyElem = $(this.element);
           var listen = this.settings.listen;
+          var base_url = this.settings.base_url;
 
           ///////////////////////////////
           // LazyChat new window event //
@@ -140,7 +143,7 @@
             var timeLineElem = $(this).parent().parent().parent().find('.timeline');
 
             if (event.keyCode == 13 && message != '') {     
-              $.post('/php/public/save-message', { server: server, client: listen, message: message }, function(messageId) {
+              $.post(base_url+'/php/public/save-message', { server: server, client: listen, message: message }, function(messageId) {
                 var appendHTML = '';
 
                 appendHTML += '<div class="client" data-message-id="'+messageId+'">';
