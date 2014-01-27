@@ -68,13 +68,13 @@
                             appendHTML += '</div>';
                                             
                             lazyChatElem.find('.message .timeline').append(appendHTML);
-
-                            if (updateScroll) {
-                              timelineElem.animate({
-                                scrollTop: timelineElem[0].scrollHeight
-                              }, 300);
-                            }
                           }
+                        }
+
+                        if (updateScroll) {
+                          timelineElem.animate({
+                            scrollTop: timelineElem[0].scrollHeight
+                          }, 300);
                         }
                     }
                   });
